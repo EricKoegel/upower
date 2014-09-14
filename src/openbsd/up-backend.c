@@ -263,7 +263,7 @@ up_backend_update_battery_state(UpDevice* device)
 	 */
 	new_state = up_backend_apm_get_battery_state_value(a.battery_state);
 	// if percentage/minutes goes down or ac is off, we're likely discharging..
-	if (percentage < a.battery_life || cur_time_to_empty < new_time_to_empty || a.ac_state == APM_AC_OFF)
+	if (percentage < a.battery_life || a.ac_state == APM_AC_OFF)
 		new_state = UP_DEVICE_STATE_DISCHARGING;
 	/*
 	 * If we're on AC, we may either be charging, or the battery is already
