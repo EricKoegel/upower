@@ -41,6 +41,7 @@
 #include "up-device-hid.h"
 #include "up-input.h"
 #include "up-config.h"
+#include "up-backend-bsd-private.h"
 #ifdef HAVE_IDEVICE
 #include "up-device-idevice.h"
 #endif /* HAVE_IDEVICE */
@@ -52,9 +53,9 @@ static void	up_backend_class_init	(UpBackendClass	*klass);
 static void	up_backend_init	(UpBackend		*backend);
 static void	up_backend_finalize	(GObject		*object);
 
-#define LOGIND_DBUS_NAME                       "org.freedesktop.login1"
-#define LOGIND_DBUS_PATH                       "/org/freedesktop/login1"
-#define LOGIND_DBUS_INTERFACE                  "org.freedesktop.login1.Manager"
+#define LOGIND_DBUS_NAME                       "org.freedesktop.ConsoleKit"
+#define LOGIND_DBUS_PATH                       "/org/freedesktop/ConsoleKit/Manager"
+#define LOGIND_DBUS_INTERFACE                  "org.freedesktop.ConsoleKit.Manager"
 
 #define UP_BACKEND_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), UP_TYPE_BACKEND, UpBackendPrivate))
 
@@ -379,6 +380,35 @@ check_action_result (GVariant *result)
 	}
 	return FALSE;
 }
+
+/**
+ * up_backend_get_seat_manager_proxy:
+ * @backend: The %UpBackend class instance
+ *
+ * Returns the seat manager object or NULL on error. [transfer none]
+ */
+GDBusProxy*
+up_backend_get_seat_manager_proxy (UpBackend  *backend)
+{
+	g_return_val_if_fail (UP_IS_BACKEND (backend), NULL);
+
+	return backend->priv->logind_proxy;
+}
+
+/**
+ * up_backend_get_config:
+ * @backend: The %UpBackend class instance
+ *
+ * Returns the UpConfig object or NULL on error. [transfer none]
+ */
+UpConfig*
+up_backend_get_config (UpBackend  *backend)
+{
+	g_return_val_if_fail (UP_IS_BACKEND (backend), NULL);
+
+	return backend->priv->config;
+}
+
 
 /**
  * up_backend_get_critical_action:
